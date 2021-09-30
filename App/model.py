@@ -38,13 +38,45 @@ los mismos.
 """
 
 # Construccion de modelos
+def newCatalog(type_list):
+    if type_list == 1:
+            type_list = "ARRAY_LIST"
+    else:
+        type_list = "LINKED_LIST"
 
+    catalog = {"artworks": None,
+               "artists": None,
+               "medium":None}
+    catalog["artworks"] = lt.newList(type_list)
+    catalog["artists"] = lt.newList(type_list)
+    catalog["medium"] = mp.newMap(500,maptype='CHAINING',loadfactor=4.0,)
+
+    return catalog
 # Funciones para agregar informacion al catalogo
+def addArtist(catalog, artist):
+    artist["artworks"] = lt.newList("ARRAY_LIST")
+    lt.addLast(catalog["artists"],artist)
+
+
+def addArtwork(catalog,artwork):
+    lt.addLast(catalog["artworks"],artwork)
+    mp.put(catalog["medium"],artwork["Medium"],artwork)
+    artists = artwork["ConstituentID"].replace("[", "").replace("]", "").split(",")
+def getByMedium(catalog,medio):
+    mapa = mp.get(catalog["medium"],medio)
+    values = me.getValue(mapa)
+    return values
 
 # Funciones para creacion de datos
 
 # Funciones de consulta
 
 # Funciones utilizadas para comparar elementos dentro de una lista
-
+def compareratings(book1, book2):
+    date1 = book1["Date"]
+    date2 = book2["Date"]
+    if((date1) < (date2)):
+        return 1
+    else:
+        return 0
 # Funciones de ordenamiento
