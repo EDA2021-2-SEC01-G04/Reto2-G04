@@ -31,7 +31,7 @@ from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
 assert cf
-
+import time as t
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
 los mismos.
@@ -56,19 +56,21 @@ def newCatalog(type_list):
 # Funciones para agregar informacion al catalogo
 def addArtist(catalog, artist):
     artist["artworks"] = lt.newList("ARRAY_LIST")
-    artworksByArtists(catalog,artist)
     lt.addLast(catalog["artists"],artist)
-    countryArtworks(catalog,artist)
-
+    
 
 def addArtwork(catalog,artwork):
     lt.addLast(catalog["artworks"],artwork)
     crtOrcmprMedium(catalog,artwork)
 
 def loadCountryMap(catalog):
+    star_time = t.process_time()
     for artist in lt.iterator(catalog["artists"]):
         artworksByArtists(catalog,artist)
         countryArtworks(catalog,artist)
+    end_time = t.process_time()
+    laps_time = (end_time - star_time)*1000
+    return laps_time
 
 def crtOrcmprMedium(catalog,artwork):
     if mp.contains(catalog["medium"],artwork["Medium"]):

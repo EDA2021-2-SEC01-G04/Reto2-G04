@@ -23,7 +23,7 @@
 import config as cf
 import model
 import csv
-
+import time as t
 
 """
 El controlador se encarga de mediar entre la vista y el modelo.
@@ -35,23 +35,34 @@ def initCatalog(type_list):
     return catalog
 # Funciones para la carga de datos
 def loadData(catalog):
-    loadArtists(catalog)
-    loadArtwork(catalog)
-
+    time_1 =loadArtists(catalog)
+    time_2 = loadArtwork(catalog)
+    return (time_1+time_2)
+    
 def loadArtists(catalog):
     artistfile = cf.data_dir + "MoMA/Artists-utf8-small.csv"
     input_file = csv.DictReader(open(artistfile,encoding="utf-8"))
+    star_time = t.process_time()
     for artist in input_file:
         model.addArtist(catalog, artist)
+    end_time = t.process_time()
+    laps_time = (end_time-star_time)*1000
+    return laps_time
 
 def loadArtwork(catalog):
     artworkfile = cf.data_dir + "MoMA/Artworks-utf8-small.csv"
     input_file = csv.DictReader(open(artworkfile,encoding="utf-8"))
+    star_time = t.process_time()
     for artwork in input_file:
         model.addArtwork(catalog,artwork)
+    end_time = t.process_time()
+    laps_time = (end_time-star_time)*1000
+    return laps_time
+
 def loadCountryMap(catalog):
-    model.loadCountryMap(catalog)
-    
+    time = model.loadCountryMap(catalog)
+    return time
+
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo

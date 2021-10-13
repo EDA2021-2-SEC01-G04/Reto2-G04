@@ -37,15 +37,16 @@ operación solicitada
 def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
-    print("2- ")
-    print("3- ")
+    print("2- Numero de obras por medio")
+    print("3- Numero de obras por pais")
 def initCatalog(type_lyst):
     """
     Inicializa el catalogo de libros
     """
     return controller.initCatalog(type_lyst)
 def loadCountryMap(catalog):
-    controller.loadCountryMap(catalog)
+    time = controller.loadCountryMap(catalog)
+    return time
 def getByMedium(catalog,medio):
     return controller.getByMedium(catalog,medio)
 
@@ -63,9 +64,9 @@ while True:
         type_lyst = 1
         catalog = initCatalog(type_lyst)
         print("Cargando información de los archivos ....")
-        controller.loadData(catalog)
-        print(lt.getElement(catalog["artists"],4)["artworks"])
-        loadCountryMap(catalog)
+        tm_1 = controller.loadData(catalog)
+        tm_2 = loadCountryMap(catalog)
+        print("el tiempo de carga de los datos fue de: " + str(tm_1+tm_2))
     elif int(inputs[0]) == 2:
         medio = input("Cual medio desea buscar\n")
         lst_m = getByMedium(catalog,medio)
