@@ -44,6 +44,8 @@ def initCatalog(type_lyst):
     Inicializa el catalogo de libros
     """
     return controller.initCatalog(type_lyst)
+def loadCountryMap(catalog):
+    controller.loadCountryMap(catalog)
 def getByMedium(catalog,medio):
     return controller.getByMedium(catalog,medio)
 
@@ -63,6 +65,7 @@ while True:
         print("Cargando información de los archivos ....")
         controller.loadData(catalog)
         print(lt.getElement(catalog["artists"],4)["artworks"])
+        loadCountryMap(catalog)
     elif int(inputs[0]) == 2:
         medio = input("Cual medio desea buscar\n")
         lst_m = getByMedium(catalog,medio)
@@ -70,9 +73,9 @@ while True:
         print("el nuemro de obras encontradas con el medio " + medio + " es " + str(lt.size(lst_m)))
 
     elif int(inputs[0]) == 3:
-        country = input("ibgrese el pais:\n ")
+        country = input("ingrese el pais:\n")
         lst_c = getByCountry(catalog,country)
-        print("El numero de obras en la nacinalidad " + country + str(lt.size(lst_c)))
+        print("El numero de obras en la nacinalidad " + country + "es de: " + str(lt.size(lst_c)))
         
 
     else:

@@ -65,6 +65,11 @@ def addArtwork(catalog,artwork):
     lt.addLast(catalog["artworks"],artwork)
     crtOrcmprMedium(catalog,artwork)
 
+def loadCountryMap(catalog):
+    for artist in lt.iterator(catalog["artists"]):
+        artworksByArtists(catalog,artist)
+        countryArtworks(catalog,artist)
+
 def crtOrcmprMedium(catalog,artwork):
     if mp.contains(catalog["medium"],artwork["Medium"]):
         medio = mp.get(catalog["medium"],artwork["Medium"])
@@ -110,7 +115,6 @@ def artworksByArtists(catalog,artists):
         for id in constId:
             if id == artists["ConstituentID"]:
                 lt.addLast(artists["artworks"],artwork)
-        print(type(id))
 
 
 
