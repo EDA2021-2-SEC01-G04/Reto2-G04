@@ -50,6 +50,10 @@ def loadArtwork(catalog):
     for artwork in input_file:
         model.addArtwork(catalog,artwork)
 # Funciones de ordenamiento
+
+# Funciones de consulta sobre el catálogo
 def getByMedium(catalog,medio):
     return model.getByMedium(catalog,medio)
-# Funciones de consulta sobre el catálogo
+
+def getByCountry(catalog,country):
+    return model.getByCountry(catalog,country)

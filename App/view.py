@@ -38,6 +38,7 @@ def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
     print("2- ")
+    print("3- ")
 def initCatalog(type_lyst):
     """
     Inicializa el catalogo de libros
@@ -45,6 +46,10 @@ def initCatalog(type_lyst):
     return controller.initCatalog(type_lyst)
 def getByMedium(catalog,medio):
     return controller.getByMedium(catalog,medio)
+
+def getByCountry(catalog,country):
+    return controller.getByCountry(catalog,country)
+
 """
 Menu principal
 """
@@ -57,11 +62,17 @@ while True:
         catalog = initCatalog(type_lyst)
         print("Cargando información de los archivos ....")
         controller.loadData(catalog)
+        print(lt.getElement(catalog["artists"],4)["artworks"])
     elif int(inputs[0]) == 2:
         medio = input("Cual medio desea buscar\n")
         lst_m = getByMedium(catalog,medio)
 
         print("el nuemro de obras encontradas con el medio " + medio + " es " + str(lt.size(lst_m)))
+
+    elif int(inputs[0]) == 3:
+        country = input("ibgrese el pais:\n ")
+        lst_c = getByCountry(catalog,country)
+        print("El numero de obras en la nacinalidad " + country + str(lt.size(lst_c)))
         
 
     else:

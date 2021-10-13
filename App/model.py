@@ -46,17 +46,19 @@ def newCatalog(type_list):
 
     catalog = {"artworks": None,
                "artists": None,
-               "medium":None}
+               "medium":None,
+               "country": None}
     catalog["artworks"] = lt.newList(type_list)
     catalog["artists"] = lt.newList(type_list)
     catalog["medium"] = mp.newMap(100,maptype='CHAINING',loadfactor=0.5,)
-
+    catalog["country"] = mp.newMap(100,maptype='CHAINING', loadfactor=0.5)
     return catalog
 # Funciones para agregar informacion al catalogo
 def addArtist(catalog, artist):
     artist["artworks"] = lt.newList("ARRAY_LIST")
+    artworksByArtists(catalog,artist)
     lt.addLast(catalog["artists"],artist)
-    
+    countryArtworks(catalog,artist)
 
 
 def addArtwork(catalog,artwork):
@@ -76,25 +78,59 @@ def crtOrcmprMedium(catalog,artwork):
 
 def artworkMedium (medio):
     entry = {'medium': "", "artwork": None}
-    entry['year'] = medio
+    entry['medium'] = medio
     entry['artwork'] = lt.newList('SINGLE_LINKED')
     return entry
 
-def getByMedium(catalog,medio):
-    mapa = mp.get(catalog["medium"],medio)
-    mapa = me.getValue(mapa)
-    if mapa != None:
-        return mapa["artwork"]
-        
-    
+def countryArtworks(catalog,artist):
+    if mp.contains(catalog["country"],artist["Nationality"]):
+        country = mp.get(catalog["country"],artist["Nationality"])
+        country = me.getValue(country)
+        for artwork in lt.iterator(artist["artworks"]):
+            lt.addLast(country["artwork"],artwork)
     else:
-        return "No se encntro ningun artwork vinculado a este medio"
-   
+        country = artist["Nationality"]
+        artCntry = artworkCountry(country)
+        for artwork in lt.iterator(artist["artworks"]):
+            lt.addLast(artCntry["artwork"],artwork)
+        mp.put(catalog["country"],country,artCntry)
+        
+def artworkCountry(country):
+    entry = {'medium': "", "artwork": None}
+    entry['country'] = country
+    entry['artwork'] = lt.newList('SINGLE_LINKED')
+    return entry
+
+
+    
+def artworksByArtists(catalog,artists):
+    artwork_lt = catalog["artworks"]
+    for artwork in lt.iterator(artwork_lt):
+        constId = artwork["ConstituentID"].replace("[", "").replace("]", "").split(",")
+        for id in constId:
+            if id == artists["ConstituentID"]:
+                lt.addLast(artists["artworks"],artwork)
+        print(type(id))
+
+
 
 # Funciones para creacion de datos
 
 # Funciones de consulta
-
+def getByMedium(catalog,medio):
+    mapa = mp.get(catalog["medium"],medio)
+    mapa = me.getValue(mapa)
+    if mapa != None:
+        return mapa["artwork"]   
+    else:
+        return "No se encntro ningun artwork vinculado a este medio"
+def getByCountry(catalog,country):
+    mapa = mp.get(catalog["country"],country)
+    mapa = me.getValue(mapa)
+    if mapa != None:
+        return mapa["artwork"]
+    else:
+        return "No se encntro artwork vinculado a este pais"
 # Funciones utilizadas para comparar elementos dentro de una lista
 def compareratings(book1, book2):
     date1 = book1["Date"]
