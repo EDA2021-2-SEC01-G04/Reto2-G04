@@ -49,23 +49,47 @@ def newCatalog(type_list):
                "medium":None}
     catalog["artworks"] = lt.newList(type_list)
     catalog["artists"] = lt.newList(type_list)
-    catalog["medium"] = mp.newMap(500,maptype='CHAINING',loadfactor=4.0,)
+    catalog["medium"] = mp.newMap(100,maptype='CHAINING',loadfactor=0.5,)
 
     return catalog
 # Funciones para agregar informacion al catalogo
 def addArtist(catalog, artist):
     artist["artworks"] = lt.newList("ARRAY_LIST")
     lt.addLast(catalog["artists"],artist)
+    
 
 
 def addArtwork(catalog,artwork):
     lt.addLast(catalog["artworks"],artwork)
-    mp.put(catalog["medium"],artwork["Medium"],artwork)
-    artists = artwork["ConstituentID"].replace("[", "").replace("]", "").split(",")
+    crtOrcmprMedium(catalog,artwork)
+
+def crtOrcmprMedium(catalog,artwork):
+    if mp.contains(catalog["medium"],artwork["Medium"]):
+        medio = mp.get(catalog["medium"],artwork["Medium"])
+        medio = me.getValue(medio)
+        lt.addLast(medio["artwork"],artwork)
+    else:
+        medio = artwork["Medium"]
+        artyear = artworkMedium(medio)
+        lt.addLast(artyear["artwork"],artwork)
+        mp.put(catalog["medium"],medio,artyear)
+
+def artworkMedium (medio):
+    entry = {'medium': "", "artwork": None}
+    entry['year'] = medio
+    entry['artwork'] = lt.newList('SINGLE_LINKED')
+    return entry
+
 def getByMedium(catalog,medio):
     mapa = mp.get(catalog["medium"],medio)
-    values = me.getValue(mapa)
-    return values
+    mapa = me.getValue(mapa)
+    if mapa != None:
+        return mapa["artwork"]
+        
+    
+    else:
+        return "No se encntro ningun artwork vinculado a este medio"
+   
 
 # Funciones para creacion de datos
 

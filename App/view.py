@@ -55,13 +55,13 @@ while True:
         print("Inicializando Catálogo ....")
         type_lyst = 1
         catalog = initCatalog(type_lyst)
-    elif int(inputs[0]) == 2:
         print("Cargando información de los archivos ....")
         controller.loadData(catalog)
-    elif int(inputs[0]) == 3:
+    elif int(inputs[0]) == 2:
         medio = input("Cual medio desea buscar\n")
         lst_m = getByMedium(catalog,medio)
-        print("el nuemro de obras encontradas con el medio " + medio + "es " + str(lst_m))
+
+        print("el nuemro de obras encontradas con el medio " + medio + " es " + str(lt.size(lst_m)))
         
 
     else:
