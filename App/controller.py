@@ -40,7 +40,7 @@ def loadData(catalog):
     return (time_1+time_2)
 
 def loadArtists(catalog):
-    artistfile = cf.data_dir + "MoMA/Artists-utf8-50pct.csv"
+    artistfile = cf.data_dir + "MoMA/Artists-utf8-small.csv"
     input_file = csv.DictReader(open(artistfile,encoding="utf-8"))
     star_time = t.process_time()
     for artist in input_file:
@@ -50,7 +50,7 @@ def loadArtists(catalog):
     return laps_time
 
 def loadArtwork(catalog):
-    artworkfile = cf.data_dir + "MoMA/Artworks-utf8-50pct.csv"
+    artworkfile = cf.data_dir + "MoMA/Artworks-utf8-small.csv"
     input_file = csv.DictReader(open(artworkfile,encoding="utf-8"))
     star_time = t.process_time()
     for artwork in input_file:
@@ -62,7 +62,9 @@ def loadArtwork(catalog):
 def loadCountryMap(catalog):
     time = model.loadCountryMap(catalog)
     return time
-
+def loadMediumMap(catalog):
+    time = model.loadMediumMap(catalog)
+    return time
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
@@ -71,3 +73,10 @@ def getByMedium(catalog,medio):
 
 def getByCountry(catalog,country):
     return model.getByCountry(catalog,country)
+
+def begindateArtists(date1,date2,catalog):
+    model.begindateArtists(date1,date2,catalog)
+    date = model.getBegindate(catalog)
+    return date
+def begindateSize(catalog):
+    return 

@@ -37,21 +37,30 @@ operación solicitada
 def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
-    print("2- Numero de obras por medio")
-    print("3- Numero de obras por pais")
+    print("2lab- Numero de obras por medio")
+    print("3lab- Numero de obras por pais")
+    print("4- Listar cronologicamente los artistas")
 def initCatalog(type_lyst):
     """
     Inicializa el catalogo de libros
     """
     return controller.initCatalog(type_lyst)
+
+def begindateArtists(date1,date2,catalog):
+    return controller.begindateArtists(date1,date2,catalog)
+
 def loadCountryMap(catalog):
     time = controller.loadCountryMap(catalog)
     return time
+
+def loadMediumMap(catalog):
+    return controller.loadMediumMap(catalog)
 def getByMedium(catalog,medio):
     return controller.getByMedium(catalog,medio)
 
 def getByCountry(catalog,country):
     return controller.getByCountry(catalog,country)
+
 
 """
 Menu principal
@@ -65,20 +74,37 @@ while True:
         catalog = initCatalog(type_lyst)
         print("Cargando información de los archivos ....")
         tm_1 = controller.loadData(catalog)
-        tm_2 = loadCountryMap(catalog)
-        print("el tiempo de carga de los datos fue de: " + str(tm_1+tm_2))
+        print("el tiempo de carga de los datos fue de: " + str(tm_1))
+    #-------------------------------------LAB6----------------------------------------------
     elif int(inputs[0]) == 2:
+        tm_2 = loadMediumMap(catalog)
         medio = input("Cual medio desea buscar\n")
         lst_m = getByMedium(catalog,medio)
-
+        print("tiempo mapa medio: " + str(tm_2))
         print("el nuemro de obras encontradas con el medio " + medio + " es " + str(lt.size(lst_m)))
 
     elif int(inputs[0]) == 3:
+        tm_3 = loadCountryMap(catalog)
         country = input("ingrese el pais:\n")
         lst_c = getByCountry(catalog,country)
-        print("El numero de obras en la nacinalidad " + country + "es de: " + str(lt.size(lst_c)))
-        
-
+        print("tiempo mapa nacionalidad: " + str(tm_3))
+        print("El numero de obras en la nacinalidad " + country + " es de: " + str(lt.size(lst_c)))
+    #---------------------------------------Reto2------------------------------------------------
+    elif int(inputs[0]) == 4:
+        date1 = input("ingrese el primer año:\n")
+        date2 = input("ingrese el segundo año:\n")
+        print("cargando mapa")
+        mapa_date = begindateArtists(date1,date2,catalog)
+        size = mapa_date[2]
+        mayor = mapa_date[0]
+        menor = mapa_date[1]
+        print("Hay un total de " + str(size) + " artistas entre los años " + date1 + " y " + date2)
+        print("Nombre: " + lt.getElement(mayor,1)["DisplayName"],",Fecha de nacimiento: " + lt.getElement(mayor,1)["BeginDate"],",Fecha de muerte: "+ lt.getElement(mayor,1)["EndDate"],",Nacionalidad: "+ lt.getElement(mayor,1)["Nationality"],",Genero: "+ lt.getElement(mayor,1)["Gender"])            
+        print("Nombre: " + lt.getElement(mayor,2)["DisplayName"],",Fecha de nacimiento: " + lt.getElement(mayor,2)["BeginDate"],",Fecha de muerte: "+ lt.getElement(mayor,2)["EndDate"],",Nacionalidad: "+ lt.getElement(mayor,2)["Nationality"],",Genero: "+ lt.getElement(mayor,2)["Gender"])
+        print("Nombre: " + lt.getElement(mayor,3)["DisplayName"],",Fecha de nacimiento: " + lt.getElement(mayor,3)["BeginDate"],",Fecha de muerte: "+ lt.getElement(mayor,3)["EndDate"],",Nacionalidad: "+ lt.getElement(mayor,3)["Nationality"],",Genero: "+ lt.getElement(mayor,3)["Gender"])
+        print("Nombre: " + lt.getElement(menor,1)["DisplayName"],",Fecha de nacimiento: " + lt.getElement(menor,1)["BeginDate"],",Fecha de muerte: "+ lt.getElement(menor,1)["EndDate"],",Nacionalidad: "+ lt.getElement(menor,1)["Nationality"],",Genero: "+ lt.getElement(menor,1)["Gender"])            
+        print("Nombre: " + lt.getElement(menor,2)["DisplayName"],",Fecha de nacimiento: " + lt.getElement(menor,2)["BeginDate"],",Fecha de muerte: "+ lt.getElement(menor,2)["EndDate"],",Nacionalidad: "+ lt.getElement(menor,2)["Nationality"],",Genero: "+ lt.getElement(menor,2)["Gender"])
+        print("Nombre: " + lt.getElement(menor,3)["DisplayName"],",Fecha de nacimiento: " + lt.getElement(menor,3)["BeginDate"],",Fecha de muerte: "+ lt.getElement(menor,3)["EndDate"],",Nacionalidad: "+ lt.getElement(menor,3)["Nationality"],",Genero: "+ lt.getElement(menor,3)["Gender"])
     else:
         sys.exit(0)
 sys.exit(0)

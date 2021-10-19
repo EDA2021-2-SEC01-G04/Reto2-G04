@@ -50,7 +50,9 @@ def newCatalog(type_list):
                "country": None}
     catalog["artworks"] = lt.newList(type_list)
     catalog["artists"] = lt.newList(type_list)
-    catalog["medium"] = mp.newMap(160000,maptype='PROBING',loadfactor=0.80,)
+    catalog["begindate"] = mp.newMap(661,maptype='PROBING',loadfactor=0.50)
+    catalog["department"] = mp.newMap(661,maptype='PROBING',loadfactor=0.50)
+    catalog["medium"] = mp.newMap(160000,maptype='PROBING', loadfactor=0.80)
     catalog["country"] = mp.newMap(160000,maptype='PROBING', loadfactor=0.80)
     return catalog
 # Funciones para agregar informacion al catalogo
@@ -61,12 +63,28 @@ def addArtist(catalog, artist):
 
 def addArtwork(catalog,artwork):
     lt.addLast(catalog["artworks"],artwork)
-    crtOrcmprMedium(catalog,artwork)
+    #crtOrcmprMedium(catalog,artwork)
+    artists = artwork["ConstituentID"].replace("[", "").replace("]", "").split(",")
+    for artist in artists:
+        addArtistOfArtwork(catalog,artist,artwork)
+
+def addArtistOfArtwork(catalog,artist_id,artworks):
+    for artist in lt.iterator(catalog["artists"]):
+        if artist["ConstituentID"] == artist_id:
+            lt.addLast(artist["artworks"],artworks)
+
+#--------------------------------------------------LAB6-----------------------------------------------------------------
+def loadMediumMap(catalog):
+    star_time = t.process_time()
+    for artwork in lt.iterator(catalog["artworks"]):
+        crtOrcmprMedium(catalog,artwork)
+    end_time = t.process_time()
+    laps_time = (end_time - star_time)*1000
+    return laps_time
 
 def loadCountryMap(catalog):
     star_time = t.process_time()
     for artist in lt.iterator(catalog["artists"]):
-        artworksByArtists(catalog,artist)
         countryArtworks(catalog,artist)
     end_time = t.process_time()
     laps_time = (end_time - star_time)*1000
@@ -110,15 +128,65 @@ def artworkCountry(country):
 
 
     
-def artworksByArtists(catalog,artists):
-    artwork_lt = catalog["artworks"]
-    for artwork in lt.iterator(artwork_lt):
-        constId = artwork["ConstituentID"].replace("[", "").replace("]", "").split(",")
-        for id in constId:
-            if id == artists["ConstituentID"]:
-                lt.addLast(artists["artworks"],artwork)
+#def artworksByArtists(catalog,artists):
+    #artwork_lt = catalog["artworks"]
+    #for artwork in lt.iterator(artwork_lt):
+        #constId = artwork["ConstituentID"].replace("[", "").replace("]", "").split(",")
+        #for id in constId:
+            #if id == artists["ConstituentID"]:
+                #lt.addLast(artists["artworks"],artwork)
 
 
+#Punto 1 Reto2
+def begindateArtists(date1,date2,catalog):
+    
+    for artists in lt.iterator(catalog["artists"]):
+        if artists["BeginDate"] >= date1 and artists["BeginDate"] <= date2 :
+            if mp.contains(catalog["begindate"],artists["BeginDate"]):
+                date = mp.get(catalog["begindate"],artists["BeginDate"])
+                date = me.getValue(date)
+                lt.addLast(date["artist"],artists)
+            else:
+                date = artists["BeginDate"]
+                artdate = artisByBegindate(date)
+                lt.addLast(artdate["artist"],artists)
+                mp.put(catalog["begindate"],date,artdate)
+    return 
+
+def artisByBegindate(date):
+    entry = {"date": "", "artist":None}
+    entry["date"] = date
+    entry["artist"] = lt.newList("SINGLE_LINKED")
+    return entry 
+
+
+#Punto 4
+
+
+
+
+
+
+
+# Punto 5
+def mapByDepartment(catalog,department):
+    for artwork in lt.iterator(catalog["artworks"]):
+        if artwork["Department"] == department:
+            if mp.contains(catalog["department"],artwork["Department"]):
+                medio = mp.get(catalog["department"],artwork["Department"])
+                medio = me.getValue(medio)
+                lt.addLast(medio["artworks"],artwork)
+            else:
+                medio = artwork["Department"]
+                artdep = artworkMedium(medio)
+                lt.addLast(artdep["artworks"],artwork)
+                mp.put(catalog["department"],medio,artdep)
+
+def artworkByDepartment(department):
+    entry = {"department": "", "artist":None}
+    entry["department"] = department
+    entry["artworks"] = lt.newList("SINGLE_LINKED")
+    return entry
 
 # Funciones para creacion de datos
 
@@ -137,10 +205,40 @@ def getByCountry(catalog,country):
         return mapa["artwork"]
     else:
         return "No se encntro artwork vinculado a este pais"
+
+def getBegindate(catalog):
+    mapa = mp.keySet(catalog["begindate"])
+    mayor = lt.newList()
+    menor = lt.newList()
+    sort_m = sa.sort(mapa,compareratings)
+
+    for fecha in lt.iterator(sort_m):
+        f = mp.get(catalog["begindate"],fecha)
+        f = me.getValue(f)
+        putinfomation(mayor,f["artist"])
+        if lt.size(mayor) >= 3:
+            break
+    sort_men = sa.sort(mapa,compareratings2)   
+    for fecha in lt.iterator(sort_men):
+        f = mp.get(catalog["begindate"],fecha)
+        f = me.getValue(f)
+        putinfomation(menor,f["artist"])
+        if lt.size(menor) >= 3:
+            break
+    size = mp.size(catalog["begindate"])
+    return (mayor,menor,size)
+    
+
+def putinfomation(lst,lst2):
+    for l in lt.iterator(lst2):
+        lt.addLast(lst,l)
 # Funciones utilizadas para comparar elementos dentro de una lista
-def compareratings(book1, book2):
-    date1 = book1["Date"]
-    date2 = book2["Date"]
+def compareratings(date1, date2):
+    if((date1) < (date2)):
+        return 0
+    else:
+        return 1
+def compareratings2(date1, date2):
     if((date1) < (date2)):
         return 1
     else:
