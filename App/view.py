@@ -42,7 +42,7 @@ def printMenu():
     print("3lab- Numero de obras por pais")
     print("4- Listar cronologicamente los artistas")
     print("5- Listar cronologicamente las adquisiciones")
-    print("6- xd")
+    print("6- Clasificar las obras de un artista por tecnica")
 def initCatalog(type_lyst):
     """
     Inicializa el catalogo de libros
