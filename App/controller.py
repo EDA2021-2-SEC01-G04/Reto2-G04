@@ -66,6 +66,10 @@ def loadCountryMap(catalog):
 def loadMediumMap(catalog):
     time = model.loadMediumMap(catalog)
     return time
+def mapByNationality(catalog):
+    return model.mapByNationality(catalog)
+
+
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
@@ -74,6 +78,9 @@ def getByMedium(catalog,medio):
 
 def getByCountry(catalog,country):
     return model.getByCountry(catalog,country)
+
+def getNationality(catalog):
+    return model.getNationality(catalog)
 
 def begindateArtists(date1,date2,catalog):
     model.begindateArtists(date1,date2,catalog)

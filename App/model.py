@@ -53,6 +53,7 @@ def newCatalog(type_list):
     catalog["artists"] = lt.newList(type_list)
     catalog["begindate"] = mp.newMap(661,maptype='PROBING',loadfactor=0.50)
     catalog["department"] = mp.newMap(661,maptype='PROBING',loadfactor=0.50)
+    catalog["nationality"] = mp.newMap(661,maptype='PROBING',loadfactor=0.50)
     catalog["exactdate"] = mp.newMap(160000,maptype='PROBING', loadfactor=0.80)
     catalog["medium"] = mp.newMap(160000,maptype='PROBING', loadfactor=0.80)
     catalog["country"] = mp.newMap(160000,maptype='PROBING', loadfactor=0.80)
@@ -232,7 +233,19 @@ def ArtworksOfMedium():
 
 
 #Punto 4
-
+def mapByNationality(catalog):
+    for artist in lt.iterator(catalog["artists"]):
+        if mp.contains(catalog["nationality"],artist["Nationality"]):
+            country = mp.get(catalog["nationality"],artist["Nationality"])
+            country = me.getValue(country)
+            for artwork in lt.iterator(artist["artworks"]):
+                lt.addLast(country["artwork"],artwork)
+        else:
+            country = artist["Nationality"]
+            artCntry = artworkCountry(country)
+            for artwork in lt.iterator(artist["artworks"]):
+                lt.addLast(artCntry["artwork"],artwork)
+            mp.put(catalog["nationality"],country,artCntry)
 
 
 
@@ -356,6 +369,43 @@ def nameArtistsId(catalog,id):
     for artists in lt.iterator(catalog["artists"]):
         if id == artists["ConstituentID"]:
             return artists["DisplayName"]
+
+def getNationality(catalog):
+    nt_artw = {}
+    lst = lt.newList("ARRAY_LIST")
+    lst_p = lt.newList("ARRAY_LIST")
+    for key in lt.iterator(mp.keySet(catalog["nationality"])):
+        lst_art = mp.get(catalog["nationality"],key)
+        lst_art = me.getValue(lst_art)
+        sz = lt.size(lst_art["artwork"])
+        nt_artw[key] = sz
+
+    for cntry in nt_artw:
+        number = nt_artw[cntry]
+        lt.addLast(lst,number)
+    lst_sort_num = (sa.sort(lst,compareratings))
+    for num in lt.iterator(lst_sort_num):
+        for key in nt_artw:
+            if nt_artw[key] == num:
+                lt.addLast(lst_p,key)
+    info = getArworksnationality(catalog,lst_p)
+    return (lst_sort_num,lst_p,info)
+
+def getArworksnationality(catalog,lst_key):
+    key = lt.getElement(lst_key,1)
+    lst_info = lt.newList("ARRAY_LIST")
+    lst = mp.get(catalog["nationality"],key)
+    lst = me.getValue(lst)
+    sz = lt.size(lst["artwork"])
+
+    lt.addLast(lst_info,lt.getElement(lst["artwork"],1))
+    lt.addLast(lst_info,lt.getElement(lst["artwork"],2))
+    lt.addLast(lst_info,lt.getElement(lst["artwork"],3))
+    lt.addLast(lst_info,lt.getElement(lst["artwork"],sz-2))
+    lt.addLast(lst_info,lt.getElement(lst["artwork"],sz-1))
+    lt.addLast(lst_info,lt.getElement(lst["artwork"],sz))
+    return lst_info
+
 # Funciones utilizadas para comparar elementos dentro de una lista
 def compareratings(date1, date2):
     if((date1) < (date2)):

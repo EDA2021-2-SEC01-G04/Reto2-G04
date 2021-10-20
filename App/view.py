@@ -43,6 +43,20 @@ def printMenu():
     print("4- Listar cronologicamente los artistas")
     print("5- Listar cronologicamente las adquisiciones")
     print("6- Clasificar las obras de un artista por tecnica")
+    print("7- Clasificar las obras por la nacionalidad de sus creadores")
+def top10country(countries):
+    bst_cntry= countries[1]
+    num = countries[0]
+    j = 1
+    while j <= 10:
+        print(lt.getElement(bst_cntry,j) +":  "+ str(lt.getElement(num,j)))
+        j += 1
+
+
+
+
+
+
 def initCatalog(type_lyst):
     """
     Inicializa el catalogo de libros
@@ -63,6 +77,11 @@ def artworksbyartistname(name_artist,catalog):
 
 def artistofartwork(artwork,catalog):
     return controller.artistsOfAnArtwork(artwork,catalog)
+
+def mapByNationality(catalog):
+    return controller.mapByNationality(catalog)
+def getNationality(catalog):
+    return controller.getNationality(catalog)
 
 def loadCountryMap(catalog):
     time = controller.loadCountryMap(catalog)
@@ -148,6 +167,18 @@ while True:
         print("Nombre: " + lt.getElement(obras,1)["Title"]," ,Fecha: " + lt.getElement(obras,1)["DateAcquired"]," ,Medio: " + lt.getElement(obras,1)["Medium"]," ,Dimensiones: " + lt.getElement(obras,1)["Dimensions"] + "\n")
         print("Nombre: " + lt.getElement(obras,2)["Title"]," ,Fecha: " + lt.getElement(obras,2)["DateAcquired"]," ,Medio: " + lt.getElement(obras,2)["Medium"]," ,Dimensiones: " + lt.getElement(obras,2)["Dimensions"] + "\n")
         print("Nombre: " + lt.getElement(obras,3)["Title"]," ,Fecha: " + lt.getElement(obras,3)["DateAcquired"]," ,Medio: " + lt.getElement(obras,3)["Medium"]," ,Dimensiones: " + lt.getElement(obras,3)["Dimensions"] + "\n")
+    elif int(inputs[0]) == 7:
+        mapByNationality(catalog)
+        lst_nat = getNationality(catalog)
+        lst_obras = lst_nat[2]
+        top10country(lst_nat)
+        print("ID del objeto: " + lt.getElement(lst_obras,1)["ObjectID"], " Titulo: " + lt.getElement(lst_obras,1)["Title"]," Medio: " + lt.getElement(lst_obras,1)["Medium"]," Año: " + lt.getElement(lst_obras,1)["Date"]," Dimensiones: " + lt.getElement(lst_obras,1)["Dimensions"]," Departamento: " + lt.getElement(lst_obras,1)["Department"]) 
+        print("ID del objeto: " + lt.getElement(lst_obras,2)["ObjectID"], " Titulo: " + lt.getElement(lst_obras,2)["Title"]," Medio: " + lt.getElement(lst_obras,2)["Medium"]," Año: " + lt.getElement(lst_obras,2)["Date"]," Dimensiones: " + lt.getElement(lst_obras,2)["Dimensions"]," Departamento: " + lt.getElement(lst_obras,2)["Department"]) 
+        print("ID del objeto: " + lt.getElement(lst_obras,3)["ObjectID"], " Titulo: " + lt.getElement(lst_obras,3)["Title"]," Medio: " + lt.getElement(lst_obras,3)["Medium"]," Año: " + lt.getElement(lst_obras,3)["Date"]," Dimensiones: " + lt.getElement(lst_obras,3)["Dimensions"]," Departamento: " + lt.getElement(lst_obras,3)["Department"]) 
+        print("ID del objeto: " + lt.getElement(lst_obras,4)["ObjectID"], " Titulo: " + lt.getElement(lst_obras,4)["Title"]," Medio: " + lt.getElement(lst_obras,4)["Medium"]," Año: " + lt.getElement(lst_obras,4)["Date"]," Dimensiones: " + lt.getElement(lst_obras,4)["Dimensions"]," Departamento: " + lt.getElement(lst_obras,4)["Department"]) 
+        print("ID del objeto: " + lt.getElement(lst_obras,5)["ObjectID"], " Titulo: " + lt.getElement(lst_obras,5)["Title"]," Medio: " + lt.getElement(lst_obras,5)["Medium"]," Año: " + lt.getElement(lst_obras,5)["Date"]," Dimensiones: " + lt.getElement(lst_obras,5)["Dimensions"]," Departamento: " + lt.getElement(lst_obras,5)["Department"]) 
+        print("ID del objeto: " + lt.getElement(lst_obras,6)["ObjectID"], " Titulo: " + lt.getElement(lst_obras,6)["Title"]," Medio: " + lt.getElement(lst_obras,6)["Medium"]," Año: " + lt.getElement(lst_obras,6)["Date"]," Dimensiones: " + lt.getElement(lst_obras,6)["Dimensions"]," Departamento: " + lt.getElement(lst_obras,6)["Department"]) 
+
     else:
         sys.exit(0)
 sys.exit(0)
