@@ -42,6 +42,7 @@ def printMenu():
     print("3lab- Numero de obras por pais")
     print("4- Listar cronologicamente los artistas")
     print("5- Listar cronologicamente las adquisiciones")
+    print("6- xd")
 def initCatalog(type_lyst):
     """
     Inicializa el catalogo de libros
@@ -56,6 +57,9 @@ def dateOfArtwork(date1,date2,catalog):
 
 def purchase(date1,date2,catalog):
     return controller.purchase(date1,date2,catalog)
+
+def artworksbyartistname(name_artist,catalog):
+    return controller.ArtworksOfMediumByArtist(name_artist,catalog)
 
 def artistofartwork(artwork,catalog):
     return controller.artistsOfAnArtwork(artwork,catalog)
@@ -126,13 +130,24 @@ while True:
         compras = resultados[1]
         mayor = mapa_date[0]
         menor = mapa_date[1]
-        print("Hay un total de " + str(size1) + " obras entre los años " + date1 + " y " + date2 + ", teniendo un total de " + str(compras) + " obras adquiridas por purchase")
-        print("Nombre: " + lt.getElement(mayor,1)["Title"],"Artistas: " + artistofartwork(lt.getElement(mayor,1),catalog) ,"Fecha: " + lt.getElement(mayor,1)["DateAcquired"],",Medio: " + lt.getElement(mayor,1)["Medium"],",Dimensiones: " + lt.getElement(mayor,1)["Dimensions"])
-        print("Nombre: " + lt.getElement(mayor,2)["Title"],"Artistas: " + artistofartwork(lt.getElement(mayor,2),catalog) ,",Fecha: " + lt.getElement(mayor,2)["DateAcquired"],",Medio: " + lt.getElement(mayor,2)["Medium"],",Dimensiones: " + lt.getElement(mayor,2)["Dimensions"])
-        print("Nombre: " + lt.getElement(mayor,3)["Title"],"Artistas: " + artistofartwork(lt.getElement(mayor,3),catalog) ,",Fecha: " + lt.getElement(mayor,3)["DateAcquired"],",Medio: " + lt.getElement(mayor,3)["Medium"],",Dimensiones: " + lt.getElement(mayor,3)["Dimensions"])
-        print("Nombre: " + lt.getElement(menor,1)["Title"],"Artistas: " + artistofartwork(lt.getElement(menor,1),catalog) ,",Fecha: " + lt.getElement(menor,1)["DateAcquired"],",Medio: " + lt.getElement(menor,1)["Medium"],",Dimensiones: " + lt.getElement(menor,1)["Dimensions"])
-        print("Nombre: " + lt.getElement(menor,2)["Title"],"Artistas: " + artistofartwork(lt.getElement(menor,2),catalog) ,",Fecha: " + lt.getElement(menor,2)["DateAcquired"],",Medio: " + lt.getElement(menor,2)["Medium"],",Dimensiones: " + lt.getElement(menor,2)["Dimensions"])
-        print("Nombre: " + lt.getElement(menor,3)["Title"],"Artistas: " + artistofartwork(lt.getElement(menor,3),catalog) ,",Fecha: " + lt.getElement(menor,3)["DateAcquired"],",Medio: " + lt.getElement(menor,3)["Medium"],",Dimensiones: " + lt.getElement(menor,3)["Dimensions"])
+        print("Hay un total de " + str(size1) + " obras entre los años " + date1 + " y " + date2 + ", teniendo un total de " + str(compras) + " obras adquiridas por purchase.\n")
+        print("Nombre: " + lt.getElement(mayor,1)["Title"],"Artistas: " + artistofartwork(lt.getElement(mayor,1),catalog) ,"Fecha: " + lt.getElement(mayor,1)["DateAcquired"],",Medio: " + lt.getElement(mayor,1)["Medium"],",Dimensiones: " + lt.getElement(mayor,1)["Dimensions"] + "\n")
+        print("Nombre: " + lt.getElement(mayor,2)["Title"],"Artistas: " + artistofartwork(lt.getElement(mayor,2),catalog) ,",Fecha: " + lt.getElement(mayor,2)["DateAcquired"],",Medio: " + lt.getElement(mayor,2)["Medium"],",Dimensiones: " + lt.getElement(mayor,2)["Dimensions"] + "\n")
+        print("Nombre: " + lt.getElement(mayor,3)["Title"],"Artistas: " + artistofartwork(lt.getElement(mayor,3),catalog) ,",Fecha: " + lt.getElement(mayor,3)["DateAcquired"],",Medio: " + lt.getElement(mayor,3)["Medium"],",Dimensiones: " + lt.getElement(mayor,3)["Dimensions"] + "\n")
+        print("Nombre: " + lt.getElement(menor,1)["Title"],"Artistas: " + artistofartwork(lt.getElement(menor,1),catalog) ,",Fecha: " + lt.getElement(menor,1)["DateAcquired"],",Medio: " + lt.getElement(menor,1)["Medium"],",Dimensiones: " + lt.getElement(menor,1)["Dimensions"] + "\n")
+        print("Nombre: " + lt.getElement(menor,2)["Title"],"Artistas: " + artistofartwork(lt.getElement(menor,2),catalog) ,",Fecha: " + lt.getElement(menor,2)["DateAcquired"],",Medio: " + lt.getElement(menor,2)["Medium"],",Dimensiones: " + lt.getElement(menor,2)["Dimensions"] + "\n")
+        print("Nombre: " + lt.getElement(menor,3)["Title"],"Artistas: " + artistofartwork(lt.getElement(menor,3),catalog) ,",Fecha: " + lt.getElement(menor,3)["DateAcquired"],",Medio: " + lt.getElement(menor,3)["Medium"],",Dimensiones: " + lt.getElement(menor,3)["Dimensions"] + "\n")
+    elif int(inputs[0]) == 6:
+        name_artist = input("Introduzca el nombre del artista del que desea filtrar sus obras: ")
+        print("Cargando mapa")
+        mapa_medium = artworksbyartistname(name_artist,catalog)
+        nombre_medio_mayor = lt.getElement(mapa_medium[2],1)["Medium"]
+        obras = mapa_medium[2]
+        print(name_artist + " tiene un total de " + str(mapa_medium[1]) + " obras en su coleccion, teniendo un total de " + str(mapa_medium[3]) + " tecnicas, y siendo " + nombre_medio_mayor + " la tecnica mas utilizada con " + str(mapa_medium[0]) + " obras.")
+        print("Sus primeras 3 obras de la tecnica mas utilizada (" + nombre_medio_mayor + "):\n")
+        print("Nombre: " + lt.getElement(obras,1)["Title"]," ,Fecha: " + lt.getElement(obras,1)["DateAcquired"]," ,Medio: " + lt.getElement(obras,1)["Medium"]," ,Dimensiones: " + lt.getElement(obras,1)["Dimensions"] + "\n")
+        print("Nombre: " + lt.getElement(obras,2)["Title"]," ,Fecha: " + lt.getElement(obras,2)["DateAcquired"]," ,Medio: " + lt.getElement(obras,2)["Medium"]," ,Dimensiones: " + lt.getElement(obras,2)["Dimensions"] + "\n")
+        print("Nombre: " + lt.getElement(obras,3)["Title"]," ,Fecha: " + lt.getElement(obras,3)["DateAcquired"]," ,Medio: " + lt.getElement(obras,3)["Medium"]," ,Dimensiones: " + lt.getElement(obras,3)["Dimensions"] + "\n")
     else:
         sys.exit(0)
 sys.exit(0)

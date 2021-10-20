@@ -84,14 +84,17 @@ def dateArtworks(date1,date2,catalog):
     date1 = datetime.datetime.strptime(date1, '%Y-%m-%d')
     date2 = datetime.datetime.strptime(date2, '%Y-%m-%d')
     model.artworksByDateRange(date1,date2,catalog)
-    date = model.getDate(date1,date2,catalog)
+    date = model.getDate(catalog)
     return date
 
 def purchase(date1,date2,catalog):
     date1 = datetime.datetime.strptime(date1, '%Y-%m-%d')
     date2 = datetime.datetime.strptime(date2, '%Y-%m-%d')
     return model.purchase(date1,date2,catalog)
-    
+
+def ArtworksOfMediumByArtist(name_artist,catalog):
+    model.countArtworksOfArtistByMedium(name_artist,catalog)
+    return model.getArtworkMedium(catalog)
 def artistsOfAnArtwork(artwork,catalog):
     return model.artistsOfArtwork(artwork,catalog)
 def begindateSize(catalog):

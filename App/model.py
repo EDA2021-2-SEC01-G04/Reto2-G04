@@ -168,8 +168,6 @@ def artworksByDateRange(date1,date2,catalog):
             date_Artwork = datetime.datetime.strptime(artwork["DateAcquired"], '%Y-%m-%d')
             if date_Artwork >= date1 and date_Artwork <= date2:
                 if mp.contains(catalog["exactdate"],date_Artwork):
-                    date = mp.get(catalog["exactdate"],date_Artwork)
-                    date = me.getValue(date)
                     lt.addLast(artworkdate["artworks"],artwork)
                 else:
                     artworkdate = listArtworksByDate(date_Artwork)
@@ -196,6 +194,41 @@ def purchase(date1,date2,catalog):
                     purchase += 1
     return (contador,purchase)
 
+#Punto 3
+def countArtworksOfArtistByMedium(name_artist,catalog):
+    ID = ""
+    contador = 0
+    lst = lt.newList("ARRAY_LIST")
+    lista_medios = lt.newList("ARRAY_LIST")
+    map = mp.newMap(661,maptype='PROBING',loadfactor=0.50)
+    for artist in lt.iterator(catalog["artists"]):
+        if artist["DisplayName"] == name_artist:
+            ID = artist["ConstituentID"]
+    
+    for artwork in lt.iterator(catalog["artworks"]):
+        if ID in artwork["ConstituentID"]:
+            contador += 1
+            lt.addLast(lst,artwork)
+    
+    for artwork in lt.iterator(lst):
+        dict = {"medium": artwork["Medium"],"artwork":artwork}
+        lt.addLast(lista_medios,dict)
+    for artwork in lt.iterator(lista_medios):
+            if mp.contains(catalog["medium"],artwork["medium"]):
+                nombre_medio = mp.get(catalog["medium"],artwork["medium"])
+                nombre_medio = me.getValue(nombre_medio)
+                lt.addLast(nombre_medio["artworks"],artwork["artwork"])
+                nombre_medio["count"] += 1
+            else:
+                counter = ArtworksOfMedium()
+                lt.addLast(counter["artworks"],artwork["artwork"])
+                mp.put(catalog["medium"],artwork["medium"],counter)
+    return
+
+def ArtworksOfMedium():
+    entry = {"artworks":None,"count":1}
+    entry["artworks"] = lt.newList("ARRAY_LIST")
+    return entry
 
 
 #Punto 4
@@ -266,7 +299,7 @@ def getBegindate(catalog):
     size = mp.size(catalog["begindate"])
     return (mayor,menor,size)
 
-def getDate(date1,date2,catalog):
+def getDate(catalog):
     mapa = mp.keySet(catalog["exactdate"])
     mayor = lt.newList()
     menor = lt.newList()
@@ -286,6 +319,20 @@ def getDate(date1,date2,catalog):
         if lt.size(menor) >= 3:
             break
     return (mayor,menor)
+def getArtworkMedium(catalog):
+    num_obras = 0
+    mayor = 0
+    mapa = mp.keySet(catalog["medium"])
+    num_medios = str(lt.size(mapa))
+    for medio in lt.iterator(mapa):
+        contador = mp.get(catalog["medium"],medio)
+        contador = me.getValue(contador)
+        num_obras += contador["count"]
+        if contador["count"] > mayor:
+            mayor = contador["count"]
+            obras_mayor = contador["artworks"]
+    return (mayor,num_obras,obras_mayor,num_medios)
+
     
 
 def putinfomation(lst,lst2):
