@@ -24,6 +24,7 @@ import config as cf
 import model
 import csv
 import time as t
+import datetime
 
 """
 El controlador se encarga de mediar entre la vista y el modelo.
@@ -78,5 +79,20 @@ def begindateArtists(date1,date2,catalog):
     model.begindateArtists(date1,date2,catalog)
     date = model.getBegindate(catalog)
     return date
+
+def dateArtworks(date1,date2,catalog):
+    date1 = datetime.datetime.strptime(date1, '%Y-%m-%d')
+    date2 = datetime.datetime.strptime(date2, '%Y-%m-%d')
+    model.artworksByDateRange(date1,date2,catalog)
+    date = model.getDate(date1,date2,catalog)
+    return date
+
+def purchase(date1,date2,catalog):
+    date1 = datetime.datetime.strptime(date1, '%Y-%m-%d')
+    date2 = datetime.datetime.strptime(date2, '%Y-%m-%d')
+    return model.purchase(date1,date2,catalog)
+    
+def artistsOfAnArtwork(artwork,catalog):
+    return model.artistsOfArtwork(artwork,catalog)
 def begindateSize(catalog):
     return 

@@ -30,6 +30,7 @@ from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
+import datetime
 assert cf
 import time as t
 """
@@ -52,6 +53,7 @@ def newCatalog(type_list):
     catalog["artists"] = lt.newList(type_list)
     catalog["begindate"] = mp.newMap(661,maptype='PROBING',loadfactor=0.50)
     catalog["department"] = mp.newMap(661,maptype='PROBING',loadfactor=0.50)
+    catalog["exactdate"] = mp.newMap(160000,maptype='PROBING', loadfactor=0.80)
     catalog["medium"] = mp.newMap(160000,maptype='PROBING', loadfactor=0.80)
     catalog["country"] = mp.newMap(160000,maptype='PROBING', loadfactor=0.80)
     return catalog
@@ -159,6 +161,42 @@ def artisByBegindate(date):
     entry["artist"] = lt.newList("SINGLE_LINKED")
     return entry 
 
+#Punto 2
+def artworksByDateRange(date1,date2,catalog):
+    for artwork in lt.iterator(catalog["artworks"]):
+        if artwork["DateAcquired"] != "":
+            date_Artwork = datetime.datetime.strptime(artwork["DateAcquired"], '%Y-%m-%d')
+            if date_Artwork >= date1 and date_Artwork <= date2:
+                if mp.contains(catalog["exactdate"],date_Artwork):
+                    date = mp.get(catalog["exactdate"],date_Artwork)
+                    date = me.getValue(date)
+                    lt.addLast(artworkdate["artworks"],artwork)
+                else:
+                    artworkdate = listArtworksByDate(date_Artwork)
+                    lt.addLast(artworkdate["artworks"],artwork)
+                    mp.put(catalog["exactdate"],date_Artwork,artworkdate)
+    
+    return
+
+def listArtworksByDate(date):
+    entry = {"date":"","artworks":None}
+    entry["date"] = date
+    entry["artworks"] = lt.newList("SINGLE_LINKED")
+    return entry
+
+def purchase(date1,date2,catalog):
+    contador = 0
+    purchase = 0
+    for artwork in lt.iterator(catalog["artworks"]):
+        if artwork["DateAcquired"] != "":
+            date_Artwork = datetime.datetime.strptime(artwork["DateAcquired"], '%Y-%m-%d')
+            if date_Artwork >= date1 and date_Artwork <= date2:
+                contador += 1
+                if (artwork["CreditLine"] == "purchase") or (artwork["CreditLine"] == "Purchase") or ("purchase" in artwork["CreditLine"]) or ("Purchase" in artwork["CreditLine"]):
+                    purchase += 1
+    return (contador,purchase)
+
+
 
 #Punto 4
 
@@ -227,11 +265,50 @@ def getBegindate(catalog):
             break
     size = mp.size(catalog["begindate"])
     return (mayor,menor,size)
+
+def getDate(date1,date2,catalog):
+    mapa = mp.keySet(catalog["exactdate"])
+    mayor = lt.newList()
+    menor = lt.newList()
+    sort_m = sa.sort(mapa,compareratings3)
+
+    for fecha in lt.iterator(sort_m):
+        f = mp.get(catalog["exactdate"],fecha)
+        f = me.getValue(f)
+        putinfomation(mayor,f["artworks"])
+        if lt.size(mayor) >= 3:
+            break
+    sort_men = sa.sort(mapa,compareratings4)   
+    for fecha in lt.iterator(sort_men):
+        f = mp.get(catalog["exactdate"],fecha)
+        f = me.getValue(f)
+        putinfomation(menor,f["artworks"])
+        if lt.size(menor) >= 3:
+            break
+    return (mayor,menor)
     
 
 def putinfomation(lst,lst2):
     for l in lt.iterator(lst2):
         lt.addLast(lst,l)
+    
+def artistsOfArtwork(artwork,catalog):
+    texto = ""
+    constId = (artwork["ConstituentID"]).replace("[", "").replace("]", "").replace(" ","").split(",")
+    for Id in constId:
+        nombre_a = nameArtistsId(catalog,Id)
+        if type(nombre_a) == "NoneType":
+            nombre_a = ""
+        if nombre_a != "":
+            texto += (nombre_a + ",") 
+        if texto == "":
+            texto = "Unknown"
+    return texto
+
+def nameArtistsId(catalog,id):
+    for artists in lt.iterator(catalog["artists"]):
+        if id == artists["ConstituentID"]:
+            return artists["DisplayName"]
 # Funciones utilizadas para comparar elementos dentro de una lista
 def compareratings(date1, date2):
     if((date1) < (date2)):
@@ -239,6 +316,17 @@ def compareratings(date1, date2):
     else:
         return 1
 def compareratings2(date1, date2):
+    if((date1) < (date2)):
+        return 1
+    else:
+        return 0
+
+def compareratings3(date1, date2):
+    if((date1) < (date2)):
+        return 0
+    else:
+        return 1
+def compareratings4(date1, date2):
     if((date1) < (date2)):
         return 1
     else:

@@ -20,6 +20,7 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 
+
 import config as cf
 import sys
 import controller
@@ -40,6 +41,7 @@ def printMenu():
     print("2lab- Numero de obras por medio")
     print("3lab- Numero de obras por pais")
     print("4- Listar cronologicamente los artistas")
+    print("5- Listar cronologicamente las adquisiciones")
 def initCatalog(type_lyst):
     """
     Inicializa el catalogo de libros
@@ -48,6 +50,15 @@ def initCatalog(type_lyst):
 
 def begindateArtists(date1,date2,catalog):
     return controller.begindateArtists(date1,date2,catalog)
+
+def dateOfArtwork(date1,date2,catalog):
+    return controller.dateArtworks(date1,date2,catalog)
+
+def purchase(date1,date2,catalog):
+    return controller.purchase(date1,date2,catalog)
+
+def artistofartwork(artwork,catalog):
+    return controller.artistsOfAnArtwork(artwork,catalog)
 
 def loadCountryMap(catalog):
     time = controller.loadCountryMap(catalog)
@@ -105,6 +116,23 @@ while True:
         print("Nombre: " + lt.getElement(menor,1)["DisplayName"],",Fecha de nacimiento: " + lt.getElement(menor,1)["BeginDate"],",Fecha de muerte: "+ lt.getElement(menor,1)["EndDate"],",Nacionalidad: "+ lt.getElement(menor,1)["Nationality"],",Genero: "+ lt.getElement(menor,1)["Gender"])            
         print("Nombre: " + lt.getElement(menor,2)["DisplayName"],",Fecha de nacimiento: " + lt.getElement(menor,2)["BeginDate"],",Fecha de muerte: "+ lt.getElement(menor,2)["EndDate"],",Nacionalidad: "+ lt.getElement(menor,2)["Nationality"],",Genero: "+ lt.getElement(menor,2)["Gender"])
         print("Nombre: " + lt.getElement(menor,3)["DisplayName"],",Fecha de nacimiento: " + lt.getElement(menor,3)["BeginDate"],",Fecha de muerte: "+ lt.getElement(menor,3)["EndDate"],",Nacionalidad: "+ lt.getElement(menor,3)["Nationality"],",Genero: "+ lt.getElement(menor,3)["Gender"])
+    elif int(inputs[0]) == 5:
+        date1 = input("Ingrese el primer año en formato YYYY-MM-DD:\n")
+        date2 = input("ingrese el segundo año en formato YYYY-MM-DD:\n")
+        print("Cargando mapa")
+        mapa_date = dateOfArtwork(date1,date2,catalog)
+        resultados = purchase(date1,date2,catalog)
+        size1 = resultados[0]
+        compras = resultados[1]
+        mayor = mapa_date[0]
+        menor = mapa_date[1]
+        print("Hay un total de " + str(size1) + " obras entre los años " + date1 + " y " + date2 + ", teniendo un total de " + str(compras) + " obras adquiridas por purchase")
+        print("Nombre: " + lt.getElement(mayor,1)["Title"],"Artistas: " + artistofartwork(lt.getElement(mayor,1),catalog) ,"Fecha: " + lt.getElement(mayor,1)["DateAcquired"],",Medio: " + lt.getElement(mayor,1)["Medium"],",Dimensiones: " + lt.getElement(mayor,1)["Dimensions"])
+        print("Nombre: " + lt.getElement(mayor,2)["Title"],"Artistas: " + artistofartwork(lt.getElement(mayor,2),catalog) ,",Fecha: " + lt.getElement(mayor,2)["DateAcquired"],",Medio: " + lt.getElement(mayor,2)["Medium"],",Dimensiones: " + lt.getElement(mayor,2)["Dimensions"])
+        print("Nombre: " + lt.getElement(mayor,3)["Title"],"Artistas: " + artistofartwork(lt.getElement(mayor,3),catalog) ,",Fecha: " + lt.getElement(mayor,3)["DateAcquired"],",Medio: " + lt.getElement(mayor,3)["Medium"],",Dimensiones: " + lt.getElement(mayor,3)["Dimensions"])
+        print("Nombre: " + lt.getElement(menor,1)["Title"],"Artistas: " + artistofartwork(lt.getElement(menor,1),catalog) ,",Fecha: " + lt.getElement(menor,1)["DateAcquired"],",Medio: " + lt.getElement(menor,1)["Medium"],",Dimensiones: " + lt.getElement(menor,1)["Dimensions"])
+        print("Nombre: " + lt.getElement(menor,2)["Title"],"Artistas: " + artistofartwork(lt.getElement(menor,2),catalog) ,",Fecha: " + lt.getElement(menor,2)["DateAcquired"],",Medio: " + lt.getElement(menor,2)["Medium"],",Dimensiones: " + lt.getElement(menor,2)["Dimensions"])
+        print("Nombre: " + lt.getElement(menor,3)["Title"],"Artistas: " + artistofartwork(lt.getElement(menor,3),catalog) ,",Fecha: " + lt.getElement(menor,3)["DateAcquired"],",Medio: " + lt.getElement(menor,3)["Medium"],",Dimensiones: " + lt.getElement(menor,3)["Dimensions"])
     else:
         sys.exit(0)
 sys.exit(0)
