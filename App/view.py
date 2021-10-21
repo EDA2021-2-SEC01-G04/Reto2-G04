@@ -44,6 +44,7 @@ def printMenu():
     print("5- Listar cronologicamente las adquisiciones")
     print("6- Clasificar las obras de un artista por tecnica")
     print("7- Clasificar las obras por la nacionalidad de sus creadores")
+    print("8- Calcular el costo de transporte de obras de un departamento")
 def top10country(countries):
     bst_cntry= countries[1]
     num = countries[0]
@@ -71,6 +72,12 @@ def dateOfArtwork(date1,date2,catalog):
 
 def purchase(date1,date2,catalog):
     return controller.purchase(date1,date2,catalog)
+
+def artworkCost(departamento,catalog):
+    return controller.artworkCost(catalog,departamento)
+
+def counter(departamento,catalog):
+    return controller.artworkCostCounter(catalog,departamento)
 
 def artworksbyartistname(name_artist,catalog):
     return controller.ArtworksOfMediumByArtist(name_artist,catalog)
@@ -179,6 +186,13 @@ while True:
         print("ID del objeto: " + lt.getElement(lst_obras,5)["ObjectID"], " Titulo: " + lt.getElement(lst_obras,5)["Title"]," Medio: " + lt.getElement(lst_obras,5)["Medium"]," Año: " + lt.getElement(lst_obras,5)["Date"]," Dimensiones: " + lt.getElement(lst_obras,5)["Dimensions"]," Departamento: " + lt.getElement(lst_obras,5)["Department"]) 
         print("ID del objeto: " + lt.getElement(lst_obras,6)["ObjectID"], " Titulo: " + lt.getElement(lst_obras,6)["Title"]," Medio: " + lt.getElement(lst_obras,6)["Medium"]," Año: " + lt.getElement(lst_obras,6)["Date"]," Dimensiones: " + lt.getElement(lst_obras,6)["Dimensions"]," Departamento: " + lt.getElement(lst_obras,6)["Department"]) 
 
+    elif int(inputs[0]) == 8:
+        departamento = input("Introduzca el nombre del departamento del que desea hacer la busqueda: ")
+        elements = artworkCost(departamento,catalog)
+        contadores = counter(departamento,catalog)
+        print("Cargando mapa...")
+        elemento1 = elements[0]
+        print(elemento1)
     else:
         sys.exit(0)
 sys.exit(0)

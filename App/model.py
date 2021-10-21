@@ -25,6 +25,7 @@
  """
 
 
+from os import defpath
 import config as cf
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
@@ -33,6 +34,7 @@ from DISClib.Algorithms.Sorting import shellsort as sa
 import datetime
 assert cf
 import time as t
+import math
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
 los mismos.
@@ -52,7 +54,7 @@ def newCatalog(type_list):
     catalog["artworks"] = lt.newList(type_list)
     catalog["artists"] = lt.newList(type_list)
     catalog["begindate"] = mp.newMap(661,maptype='PROBING',loadfactor=0.50)
-    catalog["department"] = mp.newMap(661,maptype='PROBING',loadfactor=0.50)
+    catalog["artworkcost"] = mp.newMap(661,maptype='PROBING',loadfactor=0.50)
     catalog["nationality"] = mp.newMap(661,maptype='PROBING',loadfactor=0.50)
     catalog["exactdate"] = mp.newMap(160000,maptype='PROBING', loadfactor=0.80)
     catalog["medium"] = mp.newMap(160000,maptype='PROBING', loadfactor=0.80)
@@ -253,24 +255,144 @@ def mapByNationality(catalog):
 
 
 # Punto 5
-def mapByDepartment(catalog,department):
+def mapByDepartment(catalog,departamento):
+    pi = math.pi
+    
     for artwork in lt.iterator(catalog["artworks"]):
-        if artwork["Department"] == department:
-            if mp.contains(catalog["department"],artwork["Department"]):
-                medio = mp.get(catalog["department"],artwork["Department"])
-                medio = me.getValue(medio)
-                lt.addLast(medio["artworks"],artwork)
+        precio1 = 0
+        precio2 = 0
+        precio3 = 0
+        precio4 = 0
+        precio5 = 0
+        precio6 = 0
+        if artwork["Circumference (cm)"] != "":
+            circumference = float(artwork["Circumference (cm)"])/100
+        else:
+            circumference = 0
+        if artwork["Depth (cm)"] != "":
+            depth = float(artwork["Depth (cm)"])/100
+        else:
+            depth = 0
+        if artwork["Diameter (cm)"] != "":
+            diameter = float(artwork["Diameter (cm)"])/100
+        else:
+            diameter = 0
+        if artwork["Height (cm)"] != "":
+            height = float(artwork["Height (cm)"])/100
+        else:
+            height = 0
+        if artwork["Length (cm)"] != "":
+            length = float(artwork["Length (cm)"])/100
+        else:
+            length = 0
+        if artwork["Weight (kg)"] != "":
+            weight = float(artwork["Weight (kg)"])
+        else:
+            weight = 0
+        if artwork["Width (cm)"] != "":
+            width = float(artwork["Width (cm)"])/100
+        if artwork["Department"] == departamento or artwork["Department"] in departamento:
+            if circumference != "" and depth != "":
+                precio1 = ((circumference)/(4*pi))*depth*72
+            if diameter != "" and depth != "":
+                precio2 = ((pi*diameter**2)/4)*depth*72
+            if height != "" and length != "":
+                precio3 = height*length*72
+            if weight != "":
+                precio4 = weight*72
+            if height != "" and length != "" and width != "":
+                precio5 = length*width*height*72
+            if height != "" and width != "":
+                precio6 = height*length*72
+            mas_caro = max(precio1,precio2,precio3,precio4,precio5,precio6)
+            if mas_caro == 0:
+                precio = 42
             else:
-                medio = artwork["Department"]
-                artdep = artworkMedium(medio)
-                lt.addLast(artdep["artworks"],artwork)
-                mp.put(catalog["department"],medio,artdep)
+                precio = mas_caro
 
-def artworkByDepartment(department):
-    entry = {"department": "", "artist":None}
-    entry["department"] = department
-    entry["artworks"] = lt.newList("SINGLE_LINKED")
-    return entry
+            artwork["cost"] = precio
+            mp.put(catalog["artworkcost"],artwork["ObjectID"],artwork)
+            
+
+def contadores(catalog,departamento):
+    pi = math.pi
+    peso = 0
+    total_obras = 0
+    precio_total = 0
+    for artwork in lt.iterator(catalog["artworks"]):
+        total_obras += 1
+        if artwork["Circumference (cm)"] != "":
+            circumference = float(artwork["Circumference (cm)"])/100
+        else:
+            circumference = 0
+        if artwork["Depth (cm)"] != "":
+            depth = float(artwork["Depth (cm)"])/100
+        else:
+            depth = 0
+        if artwork["Diameter (cm)"] != "":
+            diameter = float(artwork["Diameter (cm)"])/100
+        else:
+            diameter = 0
+        if artwork["Height (cm)"] != "":
+            height = float(artwork["Height (cm)"])/100
+        else:
+            height = 0
+        if artwork["Length (cm)"] != "":
+            length = float(artwork["Length (cm)"])/100
+        else:
+            length = 0
+        if artwork["Weight (kg)"] != "":
+            weight = float(artwork["Weight (kg)"])
+        else:
+            weight = 0
+        if artwork["Width (cm)"] != "":
+            width = float(artwork["Width (cm)"])/100
+
+        if artwork["Department"] == departamento or artwork["Department"] in departamento:
+            if circumference != "" and depth != "":
+                precio1 = ((circumference)/(4*pi))*depth*72
+            if diameter != "" and depth != "":
+                precio2 = ((pi*diameter**2)/4)*depth*72
+            if height != "" and length != "":
+                precio3 = height*length*72
+            if weight != "":
+                precio4 = weight*72
+                peso += weight
+            if height != "" and length != "" and width != "":
+                precio5 = length*width*height*72
+            if height != "" and width != "":
+                precio6 = height*length*72
+            mas_caro = max(precio1,precio2,precio3,precio4,precio5,precio6)
+            if mas_caro == 0:
+                precio = 42
+            else:
+                precio = mas_caro
+            precio_total += precio
+    return (peso,total_obras,precio_total)
+
+def costOfArtworkByDepartment(catalog):
+    mapa1 = mp.valueSet(catalog["artworkcost"])
+    mapa1 = sa.sort(mapa1,comparecosts)
+    primero = lt.getElement(mapa1,1)
+    segundo = lt.getElement(mapa1,2)
+    tercero = lt.getElement(mapa1,3)
+    cuarto = lt.getElement(mapa1,4)
+    quinto = lt.getElement(mapa1,5)
+    return (primero,segundo,tercero,cuarto,quinto)
+
+def comparecosts(book1,book2):
+    cost1 = book1["cost"]
+    cost2 = book2["cost"]
+    if(cost1) < (cost2):
+        return 1
+    else:
+        return 0
+
+
+def artworkByID(catalog,ID):
+    for artwork in lt.iterator(catalog["artworks"]):
+        if ID == artwork["ObjectID"]:
+            return artwork
 
 # Funciones para creacion de datos
 

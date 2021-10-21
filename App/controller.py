@@ -99,6 +99,14 @@ def purchase(date1,date2,catalog):
     date2 = datetime.datetime.strptime(date2, '%Y-%m-%d')
     return model.purchase(date1,date2,catalog)
 
+def artworkCost(catalog,departamento):
+    model.mapByDepartment(catalog,departamento)
+    return model.costOfArtworkByDepartment(catalog)
+
+def artworkCostCounter(catalog, departamento):
+    model.mapByDepartment(catalog,departamento)
+    return model.contadores(catalog,departamento)
+
 def ArtworksOfMediumByArtist(name_artist,catalog):
     model.countArtworksOfArtistByMedium(name_artist,catalog)
     return model.getArtworkMedium(catalog)
