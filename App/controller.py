@@ -59,6 +59,8 @@ def loadArtwork(catalog):
     end_time = t.process_time()
     laps_time = (end_time-star_time)*1000
     return laps_time
+def begindateArtists(date1,date2,catalog):
+    return model.begindateArtists(date1,date2,catalog)
 
 def loadCountryMap(catalog):
     time = model.loadCountryMap(catalog)
@@ -69,7 +71,12 @@ def loadMediumMap(catalog):
 def mapByNationality(catalog):
     return model.mapByNationality(catalog)
 
-
+def artworksByDateRange(date1,date2,catalog):
+    date1 = datetime.datetime.strptime(date1, '%Y-%m-%d')
+    date2 = datetime.datetime.strptime(date2, '%Y-%m-%d')
+    return model.artworksByDateRange(date1,date2,catalog)
+def mapByDepartment(catalog,departamento):
+    return model.mapByDepartment(catalog,departamento)
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
@@ -82,15 +89,13 @@ def getByCountry(catalog,country):
 def getNationality(catalog):
     return model.getNationality(catalog)
 
-def begindateArtists(date1,date2,catalog):
-    model.begindateArtists(date1,date2,catalog)
+def getBegindate(catalog):
     date = model.getBegindate(catalog)
     return date
 
 def dateArtworks(date1,date2,catalog):
     date1 = datetime.datetime.strptime(date1, '%Y-%m-%d')
     date2 = datetime.datetime.strptime(date2, '%Y-%m-%d')
-    model.artworksByDateRange(date1,date2,catalog)
     date = model.getDate(catalog)
     return date
 
@@ -99,17 +104,21 @@ def purchase(date1,date2,catalog):
     date2 = datetime.datetime.strptime(date2, '%Y-%m-%d')
     return model.purchase(date1,date2,catalog)
 
-def artworkCost(catalog,departamento):
-    model.mapByDepartment(catalog,departamento)
+def artworkCost(catalog):
     return model.costOfArtworkByDepartment(catalog)
 
 def artworkCostCounter(catalog, departamento):
-    model.mapByDepartment(catalog,departamento)
+    
     return model.contadores(catalog,departamento)
+
+def DateOfArtworkByDepartmentcos(catalog):
+    return model.DateOfArtworkByDepartmentcos(catalog)
 
 def ArtworksOfMediumByArtist(name_artist,catalog):
     model.countArtworksOfArtistByMedium(name_artist,catalog)
     return model.getArtworkMedium(catalog)
+
+
 def artistsOfAnArtwork(artwork,catalog):
     return model.artistsOfArtwork(artwork,catalog)
 def begindateSize(catalog):

@@ -25,7 +25,6 @@
  """
 
 
-from os import defpath
 import config as cf
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
@@ -144,19 +143,24 @@ def artworkCountry(country):
 
 #Punto 1 Reto2
 def begindateArtists(date1,date2,catalog):
-    
+    star_time = t.process_time()
+    contador = 0
     for artists in lt.iterator(catalog["artists"]):
         if artists["BeginDate"] >= date1 and artists["BeginDate"] <= date2 :
             if mp.contains(catalog["begindate"],artists["BeginDate"]):
                 date = mp.get(catalog["begindate"],artists["BeginDate"])
                 date = me.getValue(date)
                 lt.addLast(date["artist"],artists)
+                contador += 1
             else:
                 date = artists["BeginDate"]
                 artdate = artisByBegindate(date)
                 lt.addLast(artdate["artist"],artists)
                 mp.put(catalog["begindate"],date,artdate)
-    return 
+                contador += 1
+    end_time = t.process_time()
+    laps_time = (end_time - star_time)*1000
+    return (laps_time,contador)
 
 def artisByBegindate(date):
     entry = {"date": "", "artist":None}
@@ -166,6 +170,7 @@ def artisByBegindate(date):
 
 #Punto 2
 def artworksByDateRange(date1,date2,catalog):
+    star_time = t.process_time()
     for artwork in lt.iterator(catalog["artworks"]):
         if artwork["DateAcquired"] != "":
             date_Artwork = datetime.datetime.strptime(artwork["DateAcquired"], '%Y-%m-%d')
@@ -176,8 +181,9 @@ def artworksByDateRange(date1,date2,catalog):
                     artworkdate = listArtworksByDate(date_Artwork)
                     lt.addLast(artworkdate["artworks"],artwork)
                     mp.put(catalog["exactdate"],date_Artwork,artworkdate)
-    
-    return
+    end_time = t.process_time()
+    laps_time = (end_time - star_time)*1000
+    return laps_time
 
 def listArtworksByDate(date):
     entry = {"date":"","artworks":None}
@@ -188,6 +194,7 @@ def listArtworksByDate(date):
 def purchase(date1,date2,catalog):
     contador = 0
     purchase = 0
+    star_time = t.process_time()
     for artwork in lt.iterator(catalog["artworks"]):
         if artwork["DateAcquired"] != "":
             date_Artwork = datetime.datetime.strptime(artwork["DateAcquired"], '%Y-%m-%d')
@@ -195,7 +202,9 @@ def purchase(date1,date2,catalog):
                 contador += 1
                 if (artwork["CreditLine"] == "purchase") or (artwork["CreditLine"] == "Purchase") or ("purchase" in artwork["CreditLine"]) or ("Purchase" in artwork["CreditLine"]):
                     purchase += 1
-    return (contador,purchase)
+    end_time = t.process_time()
+    laps_time = (end_time - star_time)*1000
+    return (contador,purchase,laps_time)
 
 #Punto 3
 def countArtworksOfArtistByMedium(name_artist,catalog):
@@ -236,6 +245,7 @@ def ArtworksOfMedium():
 
 #Punto 4
 def mapByNationality(catalog):
+    star_time = t.process_time()
     for artist in lt.iterator(catalog["artists"]):
         if mp.contains(catalog["nationality"],artist["Nationality"]):
             country = mp.get(catalog["nationality"],artist["Nationality"])
@@ -248,7 +258,10 @@ def mapByNationality(catalog):
             for artwork in lt.iterator(artist["artworks"]):
                 lt.addLast(artCntry["artwork"],artwork)
             mp.put(catalog["nationality"],country,artCntry)
+    end_time = t.process_time()
+    laps_time = (end_time - star_time)*1000
 
+    return laps_time
 
 
 
@@ -257,7 +270,7 @@ def mapByNationality(catalog):
 # Punto 5
 def mapByDepartment(catalog,departamento):
     pi = math.pi
-    
+    star_time = t.process_time()
     for artwork in lt.iterator(catalog["artworks"]):
         precio1 = 0
         precio2 = 0
@@ -305,13 +318,16 @@ def mapByDepartment(catalog,departamento):
             if height != "" and width != "":
                 precio6 = height*length*72
             mas_caro = max(precio1,precio2,precio3,precio4,precio5,precio6)
-            if mas_caro == 0:
+            if mas_caro == 0 or mas_caro < 42:
                 precio = 42
             else:
                 precio = mas_caro
 
             artwork["cost"] = precio
             mp.put(catalog["artworkcost"],artwork["ObjectID"],artwork)
+    end_time = t.process_time()
+    laps_time = (end_time - star_time)*1000
+    return laps_time
             
 
 def contadores(catalog,departamento):
@@ -319,6 +335,7 @@ def contadores(catalog,departamento):
     peso = 0
     total_obras = 0
     precio_total = 0
+    star_time = t.process_time()
     for artwork in lt.iterator(catalog["artworks"]):
         total_obras += 1
         if artwork["Circumference (cm)"] != "":
@@ -363,22 +380,36 @@ def contadores(catalog,departamento):
             if height != "" and width != "":
                 precio6 = height*length*72
             mas_caro = max(precio1,precio2,precio3,precio4,precio5,precio6)
-            if mas_caro == 0:
+            if mas_caro == 0 or mas_caro < 42:
                 precio = 42
             else:
                 precio = mas_caro
             precio_total += precio
-    return (peso,total_obras,precio_total)
+    end_time = t.process_time()
+    laps_time = (end_time - star_time)*1000
+    return (peso,total_obras,precio_total,laps_time)
 
 def costOfArtworkByDepartment(catalog):
     mapa1 = mp.valueSet(catalog["artworkcost"])
     mapa1 = sa.sort(mapa1,comparecosts)
-    primero = lt.getElement(mapa1,1)
-    segundo = lt.getElement(mapa1,2)
-    tercero = lt.getElement(mapa1,3)
-    cuarto = lt.getElement(mapa1,4)
-    quinto = lt.getElement(mapa1,5)
-    return (primero,segundo,tercero,cuarto,quinto)
+    lst = lt.newList()
+    lt.addLast(lst,lt.getElement(mapa1,1))
+    lt.addLast(lst,lt.getElement(mapa1,2))
+    lt.addLast(lst,lt.getElement(mapa1,3))
+    lt.addLast(lst,lt.getElement(mapa1,4))
+    lt.addLast(lst,lt.getElement(mapa1,5))
+    return lst
+    
+def DateOfArtworkByDepartmentcos(catalog):
+    mapa_1 = mp.valueSet(catalog["artworkcost"])
+    mapa_1 = sa.sort(mapa_1,compardate)
+    lst = lt.newList()
+    lt.addLast(lst,lt.getElement(mapa_1,1))
+    lt.addLast(lst,lt.getElement(mapa_1,2))
+    lt.addLast(lst,lt.getElement(mapa_1,3))
+    lt.addLast(lst,lt.getElement(mapa_1,4))
+    lt.addLast(lst,lt.getElement(mapa_1,5))
+    return lst
 
 def comparecosts(book1,book2):
     cost1 = book1["cost"]
@@ -387,7 +418,13 @@ def comparecosts(book1,book2):
         return 1
     else:
         return 0
-
+def compardate(book1,book2):
+    cost1 = book1["Date"]
+    cost2 = book2["Date"]
+    if(cost1) > (cost2):
+        return 1
+    else:
+        return 0
 
 def artworkByID(catalog,ID):
     for artwork in lt.iterator(catalog["artworks"]):
@@ -417,7 +454,7 @@ def getBegindate(catalog):
     mayor = lt.newList()
     menor = lt.newList()
     sort_m = sa.sort(mapa,compareratings)
-
+    star_time = t.process_time()
     for fecha in lt.iterator(sort_m):
         f = mp.get(catalog["begindate"],fecha)
         f = me.getValue(f)
@@ -431,15 +468,16 @@ def getBegindate(catalog):
         putinfomation(menor,f["artist"])
         if lt.size(menor) >= 3:
             break
-    size = mp.size(catalog["begindate"])
-    return (mayor,menor,size)
+    end_time = t.process_time()
+    laps_time = (end_time - star_time)*1000
+    return (mayor,menor,laps_time)
 
 def getDate(catalog):
     mapa = mp.keySet(catalog["exactdate"])
     mayor = lt.newList()
     menor = lt.newList()
     sort_m = sa.sort(mapa,compareratings3)
-
+    star_time = t.process_time()
     for fecha in lt.iterator(sort_m):
         f = mp.get(catalog["exactdate"],fecha)
         f = me.getValue(f)
@@ -453,7 +491,10 @@ def getDate(catalog):
         putinfomation(menor,f["artworks"])
         if lt.size(menor) >= 3:
             break
-    return (mayor,menor)
+    end_time = t.process_time()
+    laps_time = (end_time - star_time)*1000
+    return (mayor,menor,laps_time)
+
 def getArtworkMedium(catalog):
     num_obras = 0
     mayor = 0
@@ -496,6 +537,7 @@ def getNationality(catalog):
     nt_artw = {}
     lst = lt.newList("ARRAY_LIST")
     lst_p = lt.newList("ARRAY_LIST")
+    star_time = t.process_time()
     for key in lt.iterator(mp.keySet(catalog["nationality"])):
         lst_art = mp.get(catalog["nationality"],key)
         lst_art = me.getValue(lst_art)
@@ -510,8 +552,10 @@ def getNationality(catalog):
         for key in nt_artw:
             if nt_artw[key] == num:
                 lt.addLast(lst_p,key)
+    end_time = t.process_time()
+    laps_time = (end_time - star_time)*1000
     info = getArworksnationality(catalog,lst_p)
-    return (lst_sort_num,lst_p,info)
+    return (lst_sort_num,lst_p,info,laps_time)
 
 def getArworksnationality(catalog,lst_key):
     key = lt.getElement(lst_key,1)
@@ -519,7 +563,6 @@ def getArworksnationality(catalog,lst_key):
     lst = mp.get(catalog["nationality"],key)
     lst = me.getValue(lst)
     sz = lt.size(lst["artwork"])
-
     lt.addLast(lst_info,lt.getElement(lst["artwork"],1))
     lt.addLast(lst_info,lt.getElement(lst["artwork"],2))
     lt.addLast(lst_info,lt.getElement(lst["artwork"],3))

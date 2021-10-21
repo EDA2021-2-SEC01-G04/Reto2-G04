@@ -21,6 +21,7 @@
  """
 
 
+from time import time
 import config as cf
 import sys
 import controller
@@ -66,6 +67,10 @@ def initCatalog(type_lyst):
 
 def begindateArtists(date1,date2,catalog):
     return controller.begindateArtists(date1,date2,catalog)
+def getBegindate(catalog):
+    return controller.getBegindate(catalog)
+def artworksByDateRange(date1,date2,catalog):
+    return controller.artworksByDateRange(date1,date2,catalog)
 
 def dateOfArtwork(date1,date2,catalog):
     return controller.dateArtworks(date1,date2,catalog)
@@ -76,10 +81,17 @@ def purchase(date1,date2,catalog):
 def artworkCost(departamento,catalog):
     return controller.artworkCost(catalog,departamento)
 
+def mapByDepartment(catalog,departamento):
+    return controller.mapByDepartment(catalog,departamento)
+
 def counter(departamento,catalog):
     return controller.artworkCostCounter(catalog,departamento)
 
+def DateOfArtworkByDepartmentcos(catalog):
+    return controller.DateOfArtworkByDepartmentcos(catalog)
+
 def artworksbyartistname(name_artist,catalog):
+
     return controller.ArtworksOfMediumByArtist(name_artist,catalog)
 
 def artistofartwork(artwork,catalog):
@@ -135,8 +147,10 @@ while True:
         date1 = input("ingrese el primer año:\n")
         date2 = input("ingrese el segundo año:\n")
         print("cargando mapa")
-        mapa_date = begindateArtists(date1,date2,catalog)
-        size = mapa_date[2]
+        time_date = begindateArtists(date1,date2,catalog)
+        mapa_date = getBegindate(catalog)
+        print("timpo de carga"+ str((time_date[0] + mapa_date[2])))
+        size = time_date[1]
         mayor = mapa_date[0]
         menor = mapa_date[1]
         print("Hay un total de " + str(size) + " artistas entre los años " + date1 + " y " + date2)
@@ -146,12 +160,15 @@ while True:
         print("Nombre: " + lt.getElement(menor,1)["DisplayName"],",Fecha de nacimiento: " + lt.getElement(menor,1)["BeginDate"],",Fecha de muerte: "+ lt.getElement(menor,1)["EndDate"],",Nacionalidad: "+ lt.getElement(menor,1)["Nationality"],",Genero: "+ lt.getElement(menor,1)["Gender"])            
         print("Nombre: " + lt.getElement(menor,2)["DisplayName"],",Fecha de nacimiento: " + lt.getElement(menor,2)["BeginDate"],",Fecha de muerte: "+ lt.getElement(menor,2)["EndDate"],",Nacionalidad: "+ lt.getElement(menor,2)["Nationality"],",Genero: "+ lt.getElement(menor,2)["Gender"])
         print("Nombre: " + lt.getElement(menor,3)["DisplayName"],",Fecha de nacimiento: " + lt.getElement(menor,3)["BeginDate"],",Fecha de muerte: "+ lt.getElement(menor,3)["EndDate"],",Nacionalidad: "+ lt.getElement(menor,3)["Nationality"],",Genero: "+ lt.getElement(menor,3)["Gender"])
+
     elif int(inputs[0]) == 5:
         date1 = input("Ingrese el primer año en formato YYYY-MM-DD:\n")
         date2 = input("ingrese el segundo año en formato YYYY-MM-DD:\n")
         print("Cargando mapa")
+        tm = artworksByDateRange(date1,date2,catalog)
         mapa_date = dateOfArtwork(date1,date2,catalog)
         resultados = purchase(date1,date2,catalog)
+        print("El timepo de carga fue: " + str(tm+(mapa_date[2])+(resultados[2])))
         size1 = resultados[0]
         compras = resultados[1]
         mayor = mapa_date[0]
@@ -175,8 +192,9 @@ while True:
         print("Nombre: " + lt.getElement(obras,2)["Title"]," ,Fecha: " + lt.getElement(obras,2)["DateAcquired"]," ,Medio: " + lt.getElement(obras,2)["Medium"]," ,Dimensiones: " + lt.getElement(obras,2)["Dimensions"] + "\n")
         print("Nombre: " + lt.getElement(obras,3)["Title"]," ,Fecha: " + lt.getElement(obras,3)["DateAcquired"]," ,Medio: " + lt.getElement(obras,3)["Medium"]," ,Dimensiones: " + lt.getElement(obras,3)["Dimensions"] + "\n")
     elif int(inputs[0]) == 7:
-        mapByNationality(catalog)
+        tm_nat = mapByNationality(catalog)
         lst_nat = getNationality(catalog)
+        print("El tiempo de carga fue: " + str(tm_nat+(lst_nat[3])))
         lst_obras = lst_nat[2]
         top10country(lst_nat)
         print("ID del objeto: " + lt.getElement(lst_obras,1)["ObjectID"], " Titulo: " + lt.getElement(lst_obras,1)["Title"]," Medio: " + lt.getElement(lst_obras,1)["Medium"]," Año: " + lt.getElement(lst_obras,1)["Date"]," Dimensiones: " + lt.getElement(lst_obras,1)["Dimensions"]," Departamento: " + lt.getElement(lst_obras,1)["Department"]) 
@@ -188,11 +206,28 @@ while True:
 
     elif int(inputs[0]) == 8:
         departamento = input("Introduzca el nombre del departamento del que desea hacer la busqueda: ")
+        time_dep = mapByDepartment(catalog,departamento)
         elements = artworkCost(departamento,catalog)
         contadores = counter(departamento,catalog)
+        date = DateOfArtworkByDepartmentcos(catalog)
+        print("El timepo de carga fue: " + str(time_dep+(contadores[3])))
         print("Cargando mapa...")
-        elemento1 = elements[0]
-        print(elemento1)
+        elemento1 = elements
+        print("El total de elmentos a trasnportar es de: " + str(contadores[1]))
+        print("El precio estimado del transporte es de: " + str(contadores[2]))
+        print("El peso estimado de las obras es de: "+ str(contadores[0]))
+        print("------------- Obras mas antiguas -------------------------------------")
+        print("Titulo: " + lt.getElement(date,1)["Title"]," Artistas: " + " Clasificacion: " + lt.getElement(date,1)["Classification"]," Fecha: "+lt.getElement(date,1)["Date"],"Medio: "+ lt.getElement(date,1)["Medium"],"Dimensiones: "+lt.getElement(date,1)["Dimensions"],"Costo trasnporte: "+str(lt.getElement(date,1)["cost"]))
+        print("Titulo: " + lt.getElement(date,2)["Title"]," Artistas: " + " Clasificacion: " + lt.getElement(date,2)["Classification"]," Fecha: "+lt.getElement(date,2)["Date"],"Medio: "+ lt.getElement(date,2)["Medium"],"Dimensiones: "+lt.getElement(date,2)["Dimensions"],"Costo trasnporte: "+str(lt.getElement(date,2)["cost"]))
+        print("Titulo: " + lt.getElement(date,3)["Title"]," Artistas: " + " Clasificacion: " + lt.getElement(date,3)["Classification"]," Fecha: "+lt.getElement(date,3)["Date"],"Medio: "+ lt.getElement(date,3)["Medium"],"Dimensiones: "+lt.getElement(date,3)["Dimensions"],"Costo trasnporte: "+str(lt.getElement(date,3)["cost"]))
+        print("Titulo: " + lt.getElement(date,4)["Title"]," Artistas: " + " Clasificacion: " + lt.getElement(date,4)["Classification"]," Fecha: "+lt.getElement(date,4)["Date"],"Medio: "+ lt.getElement(date,4)["Medium"],"Dimensiones: "+lt.getElement(date,4)["Dimensions"],"Costo trasnporte: "+str(lt.getElement(date,4)["cost"]))
+        print("Titulo: " + lt.getElement(date,5)["Title"]," Artistas: " + " Clasificacion: " + lt.getElement(date,5)["Classification"]," Fecha: "+lt.getElement(date,5)["Date"],"Medio: "+ lt.getElement(date,5)["Medium"],"Dimensiones: "+lt.getElement(date,5)["Dimensions"],"Costo trasnporte: "+str(lt.getElement(date,5)["cost"]))
+        print("------------- Obras mas caras -------------------------------------")
+        print("Titulo: " + lt.getElement(elemento1,1)["Title"]," Artistas: " + " Clasificacion: " + lt.getElement(elemento1,1)["Classification"]," Fecha: "+lt.getElement(elemento1,1)["Date"],"Medio: "+ lt.getElement(elemento1,1)["Medium"],"Dimensiones: "+lt.getElement(elemento1,1)["Dimensions"],"Costo trasnporte: "+str(lt.getElement(elemento1,1)["cost"]))
+        print("Titulo: " + lt.getElement(elemento1,2)["Title"]," Artistas: " + " Clasificacion: " + lt.getElement(elemento1,2)["Classification"]," Fecha: "+lt.getElement(elemento1,2)["Date"],"Medio: "+ lt.getElement(elemento1,2)["Medium"],"Dimensiones: "+lt.getElement(elemento1,2)["Dimensions"],"Costo trasnporte: "+str(lt.getElement(elemento1,2)["cost"]))
+        print("Titulo: " + lt.getElement(elemento1,3)["Title"]," Artistas: " + " Clasificacion: " + lt.getElement(elemento1,3)["Classification"]," Fecha: "+lt.getElement(elemento1,3)["Date"],"Medio: "+ lt.getElement(elemento1,3)["Medium"],"Dimensiones: "+lt.getElement(elemento1,3)["Dimensions"],"Costo trasnporte: "+str(lt.getElement(elemento1,3)["cost"]))
+        print("Titulo: " + lt.getElement(elemento1,4)["Title"]," Artistas: " + " Clasificacion: " + lt.getElement(elemento1,4)["Classification"]," Fecha: "+lt.getElement(elemento1,4)["Date"],"Medio: "+ lt.getElement(elemento1,4)["Medium"],"Dimensiones: "+lt.getElement(elemento1,4)["Dimensions"],"Costo trasnporte: "+str(lt.getElement(elemento1,4)["cost"]))
+        print("Titulo: " + lt.getElement(elemento1,5)["Title"]," Artistas: " + " Clasificacion: " + lt.getElement(elemento1,5)["Classification"]," Fecha: "+lt.getElement(elemento1,5)["Date"],"Medio: "+ lt.getElement(elemento1,5)["Medium"],"Dimensiones: "+lt.getElement(elemento1,5)["Dimensions"],"Costo trasnporte: "+str(lt.getElement(elemento1,5)["cost"]))
     else:
         sys.exit(0)
 sys.exit(0)
