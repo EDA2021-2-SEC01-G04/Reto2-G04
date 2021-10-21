@@ -77,6 +77,9 @@ def artworksByDateRange(date1,date2,catalog):
     return model.artworksByDateRange(date1,date2,catalog)
 def mapByDepartment(catalog,departamento):
     return model.mapByDepartment(catalog,departamento)
+
+def countArtworksOfArtistByMedium(name_artist,catalog):
+    return model.countArtworksOfArtistByMedium(name_artist,catalog)
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
@@ -114,8 +117,7 @@ def artworkCostCounter(catalog, departamento):
 def DateOfArtworkByDepartmentcos(catalog):
     return model.DateOfArtworkByDepartmentcos(catalog)
 
-def ArtworksOfMediumByArtist(name_artist,catalog):
-    model.countArtworksOfArtistByMedium(name_artist,catalog)
+def ArtworksOfMediumByArtist(catalog):
     return model.getArtworkMedium(catalog)
 
 

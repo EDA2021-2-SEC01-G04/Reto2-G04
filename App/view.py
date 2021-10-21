@@ -90,9 +90,12 @@ def counter(departamento,catalog):
 def DateOfArtworkByDepartmentcos(catalog):
     return controller.DateOfArtworkByDepartmentcos(catalog)
 
-def artworksbyartistname(name_artist,catalog):
+def artworksbyartistname(catalog):
 
-    return controller.ArtworksOfMediumByArtist(name_artist,catalog)
+    return controller.ArtworksOfMediumByArtist(catalog)
+
+def countArtworksOfArtistByMedium(name_artist,catalog):
+    return controller.countArtworksOfArtistByMedium(name_artist,catalog)
 
 def artistofartwork(artwork,catalog):
     return controller.artistsOfAnArtwork(artwork,catalog)
@@ -183,7 +186,9 @@ while True:
     elif int(inputs[0]) == 6:
         name_artist = input("Introduzca el nombre del artista del que desea filtrar sus obras: ")
         print("Cargando mapa")
+        tm_art = countArtworksOfArtistByMedium(name_artist,catalog)
         mapa_medium = artworksbyartistname(name_artist,catalog)
+        print("El tiempo de carga fue: " + str(tm_art+(mapa_medium[4])))
         nombre_medio_mayor = lt.getElement(mapa_medium[2],1)["Medium"]
         obras = mapa_medium[2]
         print(name_artist + " tiene un total de " + str(mapa_medium[1]) + " obras en su coleccion, teniendo un total de " + str(mapa_medium[3]) + " tecnicas, y siendo " + nombre_medio_mayor + " la tecnica mas utilizada con " + str(mapa_medium[0]) + " obras.")

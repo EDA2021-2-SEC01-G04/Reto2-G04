@@ -213,6 +213,7 @@ def countArtworksOfArtistByMedium(name_artist,catalog):
     lst = lt.newList("ARRAY_LIST")
     lista_medios = lt.newList("ARRAY_LIST")
     map = mp.newMap(661,maptype='PROBING',loadfactor=0.50)
+    star_time = t.process_time()
     for artist in lt.iterator(catalog["artists"]):
         if artist["DisplayName"] == name_artist:
             ID = artist["ConstituentID"]
@@ -235,7 +236,9 @@ def countArtworksOfArtistByMedium(name_artist,catalog):
                 counter = ArtworksOfMedium()
                 lt.addLast(counter["artworks"],artwork["artwork"])
                 mp.put(catalog["medium"],artwork["medium"],counter)
-    return
+    end_time = t.process_time()
+    laps_time = (end_time - star_time)*1000
+    return laps_time
 
 def ArtworksOfMedium():
     entry = {"artworks":None,"count":1}
@@ -500,6 +503,7 @@ def getArtworkMedium(catalog):
     mayor = 0
     mapa = mp.keySet(catalog["medium"])
     num_medios = str(lt.size(mapa))
+    star_time = t.process_time()
     for medio in lt.iterator(mapa):
         contador = mp.get(catalog["medium"],medio)
         contador = me.getValue(contador)
@@ -507,7 +511,9 @@ def getArtworkMedium(catalog):
         if contador["count"] > mayor:
             mayor = contador["count"]
             obras_mayor = contador["artworks"]
-    return (mayor,num_obras,obras_mayor,num_medios)
+    end_time = t.process_time()
+    laps_time = (end_time - star_time)*1000
+    return (mayor,num_obras,obras_mayor,num_medios,laps_time)
 
     
 
