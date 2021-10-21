@@ -41,7 +41,7 @@ def loadData(catalog):
     return (time_1+time_2)
 
 def loadArtists(catalog):
-    artistfile = cf.data_dir + "MoMA/Artists-utf8-small.csv"
+    artistfile = cf.data_dir + "MoMA/Artists-utf8-large.csv"
     input_file = csv.DictReader(open(artistfile,encoding="utf-8"))
     star_time = t.process_time()
     for artist in input_file:
@@ -51,7 +51,7 @@ def loadArtists(catalog):
     return laps_time
 
 def loadArtwork(catalog):
-    artworkfile = cf.data_dir + "MoMA/Artworks-utf8-small.csv"
+    artworkfile = cf.data_dir + "MoMA/Artworks-utf8-large.csv"
     input_file = csv.DictReader(open(artworkfile,encoding="utf-8"))
     star_time = t.process_time()
     for artwork in input_file:

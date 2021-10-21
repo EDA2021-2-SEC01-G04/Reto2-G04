@@ -52,10 +52,10 @@ def newCatalog(type_list):
                "country": None}
     catalog["artworks"] = lt.newList(type_list)
     catalog["artists"] = lt.newList(type_list)
-    catalog["begindate"] = mp.newMap(661,maptype='PROBING',loadfactor=0.50)
-    catalog["artworkcost"] = mp.newMap(661,maptype='PROBING',loadfactor=0.50)
-    catalog["nationality"] = mp.newMap(661,maptype='PROBING',loadfactor=0.50)
-    catalog["exactdate"] = mp.newMap(160000,maptype='PROBING', loadfactor=0.80)
+    catalog["begindate"] = mp.newMap(30448,maptype='PROBING',loadfactor=0.50)
+    catalog["artworkcost"] = mp.newMap(160000,maptype='PROBING',loadfactor=0.50)
+    catalog["nationality"] = mp.newMap(30448,maptype='PROBING',loadfactor=0.50)
+    catalog["exactdate"] = mp.newMap(160000,maptype='PROBING', loadfactor=0.50)
     catalog["medium"] = mp.newMap(160000,maptype='PROBING', loadfactor=0.80)
     catalog["country"] = mp.newMap(160000,maptype='PROBING', loadfactor=0.80)
     return catalog
@@ -307,7 +307,7 @@ def mapByDepartment(catalog,departamento):
             weight = 0
         if artwork["Width (cm)"] != "":
             width = float(artwork["Width (cm)"])/100
-        if artwork["Department"] == departamento or artwork["Department"] in departamento:
+        if artwork["Department"] == departamento:
             if circumference != "" and depth != "":
                 precio1 = ((circumference)/(4*pi))*depth*72
             if diameter != "" and depth != "":
@@ -368,7 +368,7 @@ def contadores(catalog,departamento):
         if artwork["Width (cm)"] != "":
             width = float(artwork["Width (cm)"])/100
 
-        if artwork["Department"] == departamento or artwork["Department"] in departamento:
+        if artwork["Department"] == departamento:
             if circumference != "" and depth != "":
                 precio1 = ((circumference)/(4*pi))*depth*72
             if diameter != "" and depth != "":

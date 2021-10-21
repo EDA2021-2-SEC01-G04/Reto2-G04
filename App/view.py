@@ -78,8 +78,8 @@ def dateOfArtwork(date1,date2,catalog):
 def purchase(date1,date2,catalog):
     return controller.purchase(date1,date2,catalog)
 
-def artworkCost(departamento,catalog):
-    return controller.artworkCost(catalog,departamento)
+def artworkCost(catalog):
+    return controller.artworkCost(catalog)
 
 def mapByDepartment(catalog,departamento):
     return controller.mapByDepartment(catalog,departamento)
@@ -187,7 +187,7 @@ while True:
         name_artist = input("Introduzca el nombre del artista del que desea filtrar sus obras: ")
         print("Cargando mapa")
         tm_art = countArtworksOfArtistByMedium(name_artist,catalog)
-        mapa_medium = artworksbyartistname(name_artist,catalog)
+        mapa_medium = artworksbyartistname(catalog)
         print("El tiempo de carga fue: " + str(tm_art+(mapa_medium[4])))
         nombre_medio_mayor = lt.getElement(mapa_medium[2],1)["Medium"]
         obras = mapa_medium[2]
@@ -212,7 +212,7 @@ while True:
     elif int(inputs[0]) == 8:
         departamento = input("Introduzca el nombre del departamento del que desea hacer la busqueda: ")
         time_dep = mapByDepartment(catalog,departamento)
-        elements = artworkCost(departamento,catalog)
+        elements = artworkCost(catalog)
         contadores = counter(departamento,catalog)
         date = DateOfArtworkByDepartmentcos(catalog)
         print("El timepo de carga fue: " + str(time_dep+(contadores[3])))
